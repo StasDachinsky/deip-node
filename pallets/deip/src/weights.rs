@@ -36,6 +36,7 @@ pub trait WeightInfo {
     fn create_project(d: u32) -> Weight;
     fn create_investment_opportunity(s: u32) -> Weight;
     fn activate_crowdfunding() -> Weight;
+    fn expire_crowdfunding_already_expired() -> Weight;
     fn update_project() -> Weight;
     fn create_project_content(a: u32, r: u32) -> Weight;
     fn create_project_nda(p: u32) -> Weight;
@@ -91,6 +92,12 @@ impl<T: frame_system::Config> WeightInfo for Weights<T> {
     fn activate_crowdfunding() -> Weight {
         (29_670_000 as Weight)
             .saturating_add(T::DbWeight::get().reads(2 as Weight))
+            .saturating_add(T::DbWeight::get().writes(1 as Weight))
+    }
+    // Storage: Deip SimpleCrowdfundingMap (r:1 w:1)
+    fn expire_crowdfunding_already_expired() -> Weight {
+        (14_030_000 as Weight)
+            .saturating_add(T::DbWeight::get().reads(1 as Weight))
             .saturating_add(T::DbWeight::get().writes(1 as Weight))
     }
     // Storage: Deip ProjectMap (r:1 w:1)

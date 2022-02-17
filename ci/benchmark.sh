@@ -21,7 +21,7 @@ docker run --rm --init -t $APP_IMAGE \
     --execution wasm \
     --wasm-execution compiled \
     --pallet $PALLETS \
-    --extrinsic 'expire_crowdfunding_already_expired' \
+    --extrinsic 'expire_crowdfunding' \
     --steps 50 \
     --repeat 20 \
     --heap-pages 4096 \

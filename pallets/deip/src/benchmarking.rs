@@ -383,9 +383,21 @@ benchmarks! {
             pre_simple_crowdfunding::<T>(crowdfunding, whitelisted_caller());
         let crowdfunding =
             _create_investment_opportunity::<T>(pre_crowdfunding);
+        let crowdfunding = _activate_crowdfunding::<T>(crowdfunding);
         let crowdfunding = _expire_crowdfunding::<T>(crowdfunding);
 
     }: expire_crowdfunding(RawOrigin::None, crowdfunding.external_id)
+    verify {}
+
+    expire_crowdfunding {
+        let crowdfunding = init_simple_crowdfunding::<T>(1, 10);
+        let pre_crowdfunding =
+            pre_simple_crowdfunding::<T>(crowdfunding, whitelisted_caller());
+        let crowdfunding =
+            _create_investment_opportunity::<T>(pre_crowdfunding);
+        let crowdfunding = _activate_crowdfunding::<T>(crowdfunding);
+
+    }: _(RawOrigin::None, crowdfunding.external_id)
     verify {
         assert_last_event::<T>(Event::<T>::SimpleCrowdfundingExpired(
             crowdfunding.external_id
@@ -1272,7 +1284,18 @@ fn _create_investment_opportunity<T: Config>(
     SimpleCrowdfundingMap::<T>::get(external_id)
 }
 
-fn _expire_crowdfunding<T: Config + BalancesConfig + DeipAssetsConfig>(
+fn _activate_crowdfunding<T: Config>(
+    crowdfunding: SimpleCrowdfundingOf<T>
+) -> SimpleCrowdfundingOf<T>
+{
+    Pallet::<T>::activate_crowdfunding(
+        RawOrigin::None.into(),
+        crowdfunding.external_id
+    ).unwrap();
+    SimpleCrowdfundingMap::<T>::get(crowdfunding.external_id)
+}
+
+fn _expire_crowdfunding<T: Config>(
     mut crowdfunding: SimpleCrowdfundingOf<T>,
 ) -> SimpleCrowdfundingOf<T>
 {
