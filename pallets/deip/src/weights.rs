@@ -77,9 +77,9 @@ impl<T: frame_system::Config> WeightInfo for Weights<T> {
     // Storage: Assets InvestmentByAssetId (r:2 w:2)
     // Storage: unknown [0x3a65787472696e7369635f696e646578] (r:1 w:0)
     fn create_investment_opportunity(s: u32) -> Weight {
-        (62_900_000 as Weight)
-            // Standard Error: 139_000
-            .saturating_add((69_879_000 as Weight).saturating_mul(s as Weight))
+        (253_052_000 as Weight)
+            // Standard Error: 2_098_000
+            .saturating_add((138_235_000 as Weight).saturating_mul(s as Weight))
             .saturating_add(T::DbWeight::get().reads(6 as Weight))
             .saturating_add(T::DbWeight::get().reads((6 as Weight).saturating_mul(s as Weight)))
             .saturating_add(T::DbWeight::get().writes(4 as Weight))

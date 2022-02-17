@@ -342,7 +342,7 @@ benchmarks! {
     }
 
     create_investment_opportunity {
-        let s in 1 .. 50;
+        let s in 1 .. 10;
         let crowdfunding = init_simple_crowdfunding::<T>(1, s as u8);
         let PreSimpleCrowdfunding::<T> {
             investment,

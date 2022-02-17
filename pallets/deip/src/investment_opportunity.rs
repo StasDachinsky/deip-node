@@ -80,6 +80,10 @@ impl<T: Config> Module<T> {
         funding_model: FundingModelOf<T>,
     ) -> DispatchResult {
         ensure!(account == creator, Error::<T>::NoPermission);
+        ensure!(
+            shares.len() <= T::MaxInvestmentShares::get() as usize,
+            Error::<T>::InvestmentOpportunityTooMuchShares
+        );
 
         match funding_model {
             FundingModel::SimpleCrowdfunding { start_time, end_time, soft_cap, hard_cap } =>

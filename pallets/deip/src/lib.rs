@@ -155,6 +155,7 @@ pub trait Config:
     type DeipWeightInfo: WeightInfo;
 
     type MaxNdaParties: Get<u16>;
+    type MaxInvestmentShares: Get<u16>;
 }
 
 /// Unique Project ID reference
@@ -451,6 +452,7 @@ decl_error! {
         InvestmentOpportunityExpirationWrongState,
         InvestmentOpportunityWrongAssetId,
         InvestmentOpportunityCapDifferentAssets,
+        InvestmentOpportunityTooMuchShares,
 
         // Possible errors when DAO tries to invest to an opportunity
         InvestingNotFound,
