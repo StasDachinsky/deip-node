@@ -35,6 +35,7 @@ use sp_std::marker::PhantomData;
 pub trait WeightInfo {
     fn create_project(d: u32) -> Weight;
     fn create_investment_opportunity(s: u32) -> Weight;
+    fn activate_crowdfunding() -> Weight;
     fn update_project() -> Weight;
     fn create_project_content(a: u32, r: u32) -> Weight;
     fn create_project_nda(p: u32) -> Weight;
@@ -84,6 +85,13 @@ impl<T: frame_system::Config> WeightInfo for Weights<T> {
             .saturating_add(T::DbWeight::get().reads((6 as Weight).saturating_mul(s as Weight)))
             .saturating_add(T::DbWeight::get().writes(4 as Weight))
             .saturating_add(T::DbWeight::get().writes((4 as Weight).saturating_mul(s as Weight)))
+    }
+    // Storage: Deip SimpleCrowdfundingMap (r:1 w:1)
+    // Storage: Timestamp Now (r:1 w:0)
+    fn activate_crowdfunding() -> Weight {
+        (29_670_000 as Weight)
+            .saturating_add(T::DbWeight::get().reads(2 as Weight))
+            .saturating_add(T::DbWeight::get().writes(1 as Weight))
     }
     // Storage: Deip ProjectMap (r:1 w:1)
     fn update_project() -> Weight {

@@ -604,7 +604,9 @@ decl_module! {
             Self::create_investment_opportunity_impl(account, external_id, creator.into(), shares, funding_model)
         }
 
-        #[weight = 10_000]
+        #[weight = {
+            T::DeipWeightInfo::activate_crowdfunding()
+        }]
         fn activate_crowdfunding(origin, sale_id: InvestmentId) -> DispatchResult {
             ensure_none(origin)?;
             Self::activate_crowdfunding_impl(sale_id)

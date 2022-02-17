@@ -363,6 +363,20 @@ benchmarks! {
         ).into());
     }
 
+    activate_crowdfunding {
+        let crowdfunding = init_simple_crowdfunding::<T>(1, 10);
+        let pre_crowdfunding =
+            pre_simple_crowdfunding::<T>(crowdfunding, whitelisted_caller());
+        let crowdfunding =
+            _create_investment_opportunity::<T>(pre_crowdfunding);
+
+    }: _(RawOrigin::None, crowdfunding.external_id)
+    verify {
+        assert_last_event::<T>(Event::<T>::SimpleCrowdfundingActivated(
+            crowdfunding.external_id
+        ).into());
+    }
+
     update_project {
         let project = init_project::<T>(0, 0);
         let project = _create_project::<T>(project);
@@ -1221,4 +1235,24 @@ fn pre_simple_crowdfunding<T: Config + DeipAssetsConfig + BalancesConfig>(
         funding_model,
         shares
     }
+}
+
+fn _create_investment_opportunity<T: Config>(
+    crowdfunding:  PreSimpleCrowdfunding<T>
+) -> SimpleCrowdfundingOf<T>
+{
+    let PreSimpleCrowdfunding::<T> {
+        investment,
+        funding_model,
+        shares,
+    } = crowdfunding;
+    let external_id = investment.sale_id.clone();
+    Pallet::<T>::create_investment_opportunity(
+        RawOrigin::Signed(investment.owner.clone()).into(),
+        external_id,
+        investment.owner.clone().into(),
+        shares,
+        funding_model
+    ).unwrap();
+    SimpleCrowdfundingMap::<T>::get(external_id)
 }
