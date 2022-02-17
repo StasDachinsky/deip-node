@@ -377,6 +377,21 @@ benchmarks! {
         ).into());
     }
 
+    expire_crowdfunding_already_expired {
+        let crowdfunding = init_simple_crowdfunding::<T>(1, 10);
+        let pre_crowdfunding =
+            pre_simple_crowdfunding::<T>(crowdfunding, whitelisted_caller());
+        let crowdfunding =
+            _create_investment_opportunity::<T>(pre_crowdfunding);
+        let crowdfunding = _expire_crowdfunding::<T>(crowdfunding);
+
+    }: expire_crowdfunding(RawOrigin::None, crowdfunding.external_id)
+    verify {
+        assert_last_event::<T>(Event::<T>::SimpleCrowdfundingExpired(
+            crowdfunding.external_id
+        ).into());
+    }
+
     update_project {
         let project = init_project::<T>(0, 0);
         let project = _create_project::<T>(project);
@@ -1253,6 +1268,20 @@ fn _create_investment_opportunity<T: Config>(
         investment.owner.clone().into(),
         shares,
         funding_model
+    ).unwrap();
+    SimpleCrowdfundingMap::<T>::get(external_id)
+}
+
+fn _expire_crowdfunding<T: Config + BalancesConfig + DeipAssetsConfig>(
+    mut crowdfunding: SimpleCrowdfundingOf<T>,
+) -> SimpleCrowdfundingOf<T>
+{
+    let external_id = crowdfunding.external_id;
+    crowdfunding.end_time = now::<T>();
+    SimpleCrowdfundingMap::<T>::insert(external_id, crowdfunding);
+    Pallet::<T>::expire_crowdfunding(
+        RawOrigin::None.into(),
+        external_id,
     ).unwrap();
     SimpleCrowdfundingMap::<T>::get(external_id)
 }
