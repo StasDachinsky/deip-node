@@ -612,7 +612,10 @@ decl_module! {
             Self::activate_crowdfunding_impl(sale_id)
         }
 
-        #[weight = 10_000]
+        #[weight = {
+            T::DeipWeightInfo::expire_crowdfunding_already_expired()
+                .max(T::DeipWeightInfo::expire_crowdfunding())
+        }]
         fn expire_crowdfunding(origin, sale_id: InvestmentId) -> DispatchResult {
             ensure_none(origin)?;
             Self::expire_crowdfunding_impl(sale_id)

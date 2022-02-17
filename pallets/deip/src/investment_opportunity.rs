@@ -226,15 +226,16 @@ impl<T: Config> Module<T> {
         })
     }
 
-    pub(super) fn expire_crowdfunding_impl(sale_id: Id) -> DispatchResult {
-        SimpleCrowdfundingMap::<T>::mutate_exists(sale_id, |maybe_sale| -> DispatchResult {
+    pub(super) fn expire_crowdfunding_impl(sale_id: Id) -> DispatchResultWithPostInfo {
+        SimpleCrowdfundingMap::<T>::mutate_exists(sale_id, |maybe_sale| -> DispatchResultWithPostInfo {
             let sale = match maybe_sale.as_mut() {
                 None => return Err(Error::<T>::InvestmentOpportunityNotFound.into()),
                 Some(s) => s,
             };
 
             match sale.status {
-                Status::Expired => return Ok(()),
+                Status::Expired => return Ok(Some(
+                    T::DeipWeightInfo::expire_crowdfunding_already_expired()).into()),
                 Status::Active => ensure!(
                     pallet_timestamp::Pallet::<T>::get() >= sale.end_time,
                     Error::<T>::InvestmentOpportunityExpirationWrongState
@@ -246,7 +247,7 @@ impl<T: Config> Module<T> {
 
             Self::refund(sale);
 
-            Ok(())
+            Ok(None.into())
         })
     }
 
