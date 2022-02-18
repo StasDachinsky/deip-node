@@ -15,7 +15,7 @@ ARTIFACT=${ARTIFACT?Please specify build ARTIFACT location}
 echo "+------------------------------------------------+"
 echo "|    Prepare builder-image                       |"
 echo "+------------------------------------------------+"
-docker build -f Dockerfile -t "$BUILDER_IMAGE" .
+docker build -f Dockerfile -t "$BUILDER_IMAGE" --platform linux/arm64 .
 
 echo "+------------------------------------------------+"
 echo "|    Building...                                 |"
